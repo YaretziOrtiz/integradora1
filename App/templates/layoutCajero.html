@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/stylesCajero.css') }}">
+
+    <title>{% block title %} {% endblock%}</title>
+</head>
+<body>
+    
+    <div class="container">
+        {% block header %}
+        <!-- Aquí va el contenido del header común -->
+        {% endblock %}
+
+        {% block body %}
+        {% endblock %}
+    </div>
+    <script src="{{ url_for('static', filename='js/script.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/scriptss.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/scriptsss.js') }}"></script>
+
+</body>
+</html>

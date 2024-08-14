@@ -1,0 +1,66 @@
+{% extends './layoutCajero.html' %}
+{% block title %} {{titulo}} {% endblock %}
+{% block body %}
+<header>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/stylesForm.css') }}">
+    <div class="logo">ROLKAR</div>
+        <nav class="nav-bar">
+            
+            <form action="{{ url_for('dashboardProductos') }}" method="get" style="display: inline;">
+                <button type="submit" class="btn btn-primary">Productos</button>
+            </form>
+            <form action="{{ url_for('cajeroCorte') }}" method="get" style="display: inline;">
+                <button type="submit" class="btn btn-primary">Corte de caja</button>
+            </form>
+
+            <form action="{{ url_for('dashboardClientes') }}" method="get" style="display: inline;">
+                <button type="submit" class="btn btn-primary">Clientes</button>
+            </form>
+                <form action="{{ url_for('cajeroVentas') }}" method="get" style="display: inline;">
+                    <button type="submit" class="btn btn-primary">Ventas</button>
+                </form>
+                <select id="product-menu">
+                    <option value="usuario">Gastos</option>
+                </select>
+        </nav>
+        <div class="user-info">
+            <span id="user-dropdown" class="dropdown">Cajero@Rol</span>
+            <div class="user-icon"></div>
+            <div id="dropdown-menu" class="dropdown-content">
+                <a href="#" id="logout">Cerrar sesión</a>
+                <a href="#" id="help">Ayuda</a>
+            </div>
+        </div>
+</header>
+    <div class="container">
+        <h1>Cajero - Registro de Gastos</h1>
+        <div class="expense-form">
+            <input type="text" id="expense-description" placeholder="Descripción del gasto">
+            <input type="number" id="expense-amount" placeholder="Monto del gasto">
+            <select id="expense-type">
+                <option value="" disabled selected>Tipo de gasto</option>
+                <option value="Alquiler">Alquileres</option>
+                <option value="Servicios">Servicios</option>
+                <option value="Materiales">Materiales</option>
+                <option value="Otros">Otros</option>
+            </select>
+            <button onclick="addExpense()">Registrar Gasto</button>
+        </div>
+        <table id="expenses-table">
+            <thead>
+                <tr>
+                    <th>Descripción</th>
+                    <th>Monto</th>
+                    <th>Tipo</th>
+                </tr>
+            </thead>
+            <tbody>
+                <!-- Gastos añadidos se mostrarán aquí -->
+            </tbody>
+        </table>
+        <div class="total">
+            <strong>Total de Gastos: $<span id="total-expenses">0.00</span></strong>
+        </div>
+    </div>
+   <!-- <script src="script.js"></script> -->
+{% endblock %}

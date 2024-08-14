@@ -1,0 +1,60 @@
+{% extends './layout_cyk.html' %}
+{% block title %} {{titulo}} {% endblock %}
+{% block body %}
+<form method="post" action="{{url_for('registrarUsuario')}}" enctype="multipart/form-data">
+    <input type="hidden" name="csrf_token" value="{{csrf_token()}}">
+</head>
+<body>
+    <header>
+        <div class="logo">ROLKAR</div>
+        <nav class="nav-bar">
+
+            <a href="{{url_for('dashboardProductos')}}"><button>Productos</button></a>
+            <button>Proveedores</button>
+            <button>Clientes</button>
+            <select id="product-menu">
+                <option value="usuario">Usuario</option>
+            </select>
+            <button>Reportes</button>
+        </nav>
+        <div class="user-info">
+            <span id="user-dropdown" class="dropdown">Admin@Uri</span>
+            <div class="user-icon"></div>
+            <div id="dropdown-menu" class="dropdown-content">
+                <a href="#" id="logout">Cerrar sesión</a>
+                <a href="#" id="help">Ayuda</a>
+            </div>
+        </div>
+    </header>
+    <main>
+        <h1>Agregar un Nuevo Usario</h1>
+        <div class="form-container">
+            <label for="nombre">Nombre de usuario</label>
+            <input type="text" id="username" placeholder="Nombre">
+            
+            <label for="contrasenia"> Contraseña</label>
+            <input type="password" id="password" placeholder="Contraseña">
+
+            <label for="tipo">Estado</label>
+            <select class="form-select" aria-label="Default select example" name="tipo">
+              <option selected
+              {% if usuario is defined and usuario.activo == true %}
+                  value="true">Activo
+                {% else %}
+                value="false">Baja
+                {% endif %}
+              </option>
+              <option value="True">Activo</option>
+              <option value="False">Baja</option>
+            </select>
+            
+            <center>
+                <button id="add-product" type="submit">Guardar</button>
+                <a class="btn btn-outline-danger d-inline-flex align-items-center" id="add-other" href="{{url_for('dashboardUsuarios')}}">
+                    Cancelar
+                </a>
+            </center>
+        </div>
+    </main>
+    <script src="scripts.js"></script>
+    {% endblock %}

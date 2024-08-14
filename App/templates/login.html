@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Inicio de Sesión</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/estilosIndex.css') }}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>
+        .password-container {
+            position: relative;
+            display: flex;
+            align-items: center;
+        }
+
+        .password-container input[type="password"] {
+            width: 100%;
+            padding-right: 40px; /* espacio para el icono */
+        }
+
+        .password-container i {
+            position: absolute;
+            right: 10px;
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>BIENVENIDOS A NUTRIMENTOS ROLKAR</h1>
+        </div>
+        {% with messages = get_flashed_messages() %}
+        {% if messages %}
+          {% for message in messages %}
+          <div class="alert alert-success alert-dismissible fade show" role="alert">
+              <strong>{{message}}</strong>
+              <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                  <span aria-hidden="true">&times;</span>
+              </button>
+          </div>
+          {% endfor %}
+        {% endif %}
+      {% endwith %}
+        <br>
+        <div class="login-box">
+            <div class="avatar">
+                <img src="{{ url_for('static', filename= 'img/avatar.jpg')}}" alt="Aquí debería haber una imagen">
+            </div>
+            <form method="POST" action="{{url_for('loguear')}}">
+                <input type="hidden" name="csrf_token" value="{{csrf_token()}}">
+                <br>
+                <label for="username">Usuario</label>
+                <input type="text" id="username" name="username" placeholder="Usuario">
+                
+                <label for="password">Contraseña</label>
+                <div class="password-container">
+                    <input type="password" id="password" name="password" placeholder="••••••••">
+                    <i class="fa fa-eye" id="togglePassword"></i>
+                </div>
+                <br>
+                <button type="submit">Iniciar sesión</button>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        const togglePassword = document.querySelector('#togglePassword');
+        const password = document.querySelector('#password');
+
+        togglePassword.addEventListener('click', function () {
+            // toggle the type attribute
+            const type = password.getAttribute('type') === 'password' ? 'text' : 'password';
+            password.setAttribute('type', type);
+            
+            // toggle the eye icon
+            this.classList.toggle('fa-eye-slash');
+        });
+    </script>
+</body>
+</html>
