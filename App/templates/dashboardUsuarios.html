@@ -22,8 +22,6 @@
                     <select id="product-menu">
                         <option value="usuario">Usuarios</option>
                     </select>
-
-                    <button>Reportes</button>
         </nav>
         <div class="user-info">
             <span id="user-dropdown" class="dropdown">Admin@Uri</span>
@@ -58,12 +56,8 @@
 <br>
 <div class="table-responsive"></div>
 <table class="table table-striped table-sm table-hover">
-    <form method="get" action="{{url_for('dashboardUsuarios')}}" class="d-flex">
-        <input class="form-control" type="text" name="buscar" value="{{ search_query }}" placeholder="Buscar..." required>
-        <button class="btn btn-outline-success" type="submit"><i class="fas fa-search"></i> </button>
-      </form>
     <tr>
-        <th class="text-center">Ver</th>
+        <th class="text-center">Editar <br></th>
         <th>Nombre del usuario</th>
         <th>Tipo de usuario</th>
         <th>Activo</th>
@@ -72,10 +66,10 @@
     {% if usuarios %}
     {% for usuario in usuarios %}
         <tr>
-            <td class="text-center"><a class="btn btn-sm btn-primary" href="{{url_for('usuariosDetalles', id=usuario.id_usuario)}}"><i class="fas fa-eye"></i></a></td>
-            <td>{{ usuario.username }}</td>
-            <td>{{ usuario.tipo_usuario }}</td>
-            <td>{{ usuario.activo }}</td>
+            <td class="text-center"><a class="btn btn-sm btn-primary" href="{{url_for('usuariosEditar', id=usuario[0])}}"><i class="fas fa-eye"></i></a></td>
+            <td>{{ usuario[1] }}</td>
+            <td>{{ usuario[3] }}</td>
+            <td>{{ usuario[4] }}</td>
             <td class="text-center">
                 <button type="button" class="btn btn-sm btn-danger" data-bs-toggle="modal" data-bs-target="#staticBackdrop-{{ usuario[0] }}">
                     <i class="fas fa-trash-alt"></i>
@@ -89,30 +83,6 @@
         </tr>
     {% endif %}
 </table>
-
-<nav aria-label="Page navigation example">
-    <ul class="pagination justify-content-center">
-      {% if page > 1 %}
-      <li class="page-item">
-        <a class="page-link" href="{{ url_for('dashboardUsuarios', page=page-1, per_page=per_page) }}" aria-label="Previous">
-          <span aria-hidden="true">&laquo;</span>
-        </a>
-      </li>
-      {% endif %}
-      {% for i in range(1, total_pages + 1) %}
-      <li class="page-item {% if i == page %}active{% endif %}">
-        <a class="page-link" href="{{ url_for('dashboardUsuarios', page=i, per_page=per_page) }}">{{ i }}</a>
-      </li>
-      {% endfor %}
-      {% if page < total_pages %}
-      <li class="page-item">
-        <a class="page-link" href="{{ url_for('dashboardUsuarios', page=page+1, per_page=per_page) }}" aria-label="Next">
-          <span aria-hidden="true">&raquo;</span>
-        </a>
-      </li>
-      {% endif %}
-    </ul>
-</nav>
 
 {% if usuarios %}
 {% for usuario in usuarios %}

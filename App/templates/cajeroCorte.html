@@ -6,7 +6,7 @@
     <div class="logo">ROLKAR</div>
         <nav class="nav-bar">
             
-            <form action="{{ url_for('dashboardProductos') }}" method="get" style="display: inline;">
+            <form action="{{ url_for('cajeroProductos') }}" method="get" style="display: inline;">
                 <button type="submit" class="btn btn-primary">Productos</button>
             </form>
             <select id="product-menu">
@@ -19,7 +19,9 @@
                 <form action="{{ url_for('cajeroVentas') }}" method="get" style="display: inline;">
                     <button type="submit" class="btn btn-primary">Ventas</button>
                 </form>
-                    <button>Gastos</button>
+                <form action="{{ url_for('cajeroGastos') }}" method="get" style="display: inline;">
+                    <button type="submit" class="btn btn-primary">Gastos</button>
+                </form>
         </nav>
         <div class="user-info">
             <span id="user-dropdown" class="dropdown">Cajero@Rol</span>

@@ -7,12 +7,12 @@
     <header>
         <div class="logo">ROLKAR</div>
         <nav class="nav-bar">
-            <button>Proveedores</button>
-            <button>Clientes</button>
+            <button>Productos</button>
             <select id="product-menu">
-                <option value="usuario">Usuario</option>
+                <option value="usuario">Proveedores</option>
             </select>
-            <button>Reportes</button>
+            <button>Clientes</button>
+            <button>Usuarios</button>
         </nav>
         <div class="user-info">
             <span id="user-dropdown" class="dropdown">Admin@Uri</span>
@@ -26,9 +26,6 @@
     <main>
         <h1>Editar Proveedor</h1>
         <div class="form-container">
-            <label for="id_proveedor">ID Proveedor</label>
-            <input type="text" id="id_proveedor" placeholder="ID Proveedor" name="id_proveedor" value="{{ proveedor[0] }}">
-            
             <label for="nombre">Nombre</label>
             <input type="text" id="nombre" placeholder="Nombre" name="nombre" value="{{ proveedor[1] }}">
 

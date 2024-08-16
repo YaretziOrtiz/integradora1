@@ -19,7 +19,6 @@
         <form action="{{ url_for('dashboardUsuarios') }}" method="get" style="display: inline;">
             <button type="submit" class="btn btn-primary">Usuarios</button>
         </form>
-        <button>Reportes</button>
     </nav>
     <div class="user-info">
         <span id="user-dropdown" class="dropdown">Admin@Uri</span>
@@ -51,25 +50,28 @@
         <button class="btn btn-outline-success" type="submit"><i class="fas fa-search"></i> </button>
       </form> 
         <tr>
-            <th class="text-center">Ver <br></th>
+            <th class="text-center">Editar <br></th>
             <th>Nombre</th>
             <th>Marca</th>
             <th>Precio</th>
             <th>Fecha de caducidad</th>
             <th>Proveedor</th>
             <th>Categoria</th>
+            <th>Cantidad</th>
             <th class="text-center">Eliminar</th>
         </tr>
         {% if productos %}
         {% for producto in productos %}
             <tr>
-                <td class="text-center"><a class="btn btn-sm btn-primary" href="{{ url_for('productosDetalles', id=producto.id_producto) }}"><i class="fas fa-eye"></i></a></td>
+                <td class="text-center"><a class="btn btn-sm btn-primary" href="{{ url_for('productosEditar', id=producto.id_producto) }}"><i class="fas fa-eye"></i></a></td>
                 <td>{{ producto.nombre_producto }}</td>
                 <td>{{ producto.marca }}</td>
                 <td>{{ producto.precio }}</td>
                 <td>{{ producto.fecha_cad }}</td>
                 <td>{{ producto.nombre_proveedor }}</td>
                 <td>{{ producto.especie }}</td>
+                <td>{{ producto.cantidad }}</td>
+
                 <td class="text-center">
                     <a type="button" class="btn btn-sm btn-danger" data-bs-toggle="modal" href="#staticBackdrop-{{ producto.id_producto }}">
                         <i class="fas fa-trash-alt"></i>

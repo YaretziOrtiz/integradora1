@@ -161,12 +161,13 @@ def productosCrear():
         activo = True
         creado = datetime.now()
         editado = datetime.now()
+        cantidad = request.form['cantidad']
 
         conn = get_db_connection()
         cur = conn.cursor()
-        cur.execute('INSERT INTO productos (nombre, marca, precio, fecha_cad, fk_proveedor, fk_categoria)'
-                    'VALUES (%s, %s, %s, %s, %s, %s)',
-                    (nombre, marca, precio,fecha_caducidad, proveedor, categoria))
+        cur.execute('INSERT INTO productos (nombre, marca, precio, fecha_cad, fk_proveedor, fk_categoria, cantidad)'
+                    'VALUES (%s, %s, %s, %s, %s, %s, %s)',
+                    (nombre, marca, precio,fecha_caducidad, proveedor, categoria, cantidad))
         conn.commit()
         cur.close()
         conn.close()
@@ -205,11 +206,13 @@ def productosActualizar(id):
         precio = request.form['precio']
        # categoria = request.form['categoria']
         fecha_caducidad = request.form['fecha_caducidad']
+        cantidad = request.form['cantidad']
 
         conn = get_db_connection()
         cur = conn.cursor()
-        sql="UPDATE productos SET nombre=%s, marca=%s, precio=%s, fecha_cad=%s WHERE id_producto=%s"        
-        valores=(nombre, marca, precio, fecha_caducidad, id)
+        sql="UPDATE productos SET nombre=%s, marca=%s, precio=%s, fecha_cad=%s, cantidad=%s WHERE id_producto=%s"
+        valores=(nombre, marca, precio, fecha_caducidad, cantidad, id)
+
         cur.execute(sql,valores)
         conn.commit()
         cur.close()
@@ -332,7 +335,6 @@ def proveedoresEditar(id):
 @login_required
 def proveedoresActualizar(id):
     if request.method == 'POST':
-        id_proveedor=request.form['id_proveedor']
         nombre = request.form['nombre']
         paterno = request.form['paterno']
         materno = request.form['materno']
@@ -346,7 +348,7 @@ def proveedoresActualizar(id):
         conn = get_db_connection()
         cur = conn.cursor()
         sql="UPDATE proveedor SET nombre=%s, ape_pat=%s, ape_mat=%s, marca=%s,  telefono=%s, direccion=%s, correo=%s, cp=%s WHERE id_proveedor=%s"        
-        valores=( nombre, paterno, materno, marca, telefono, direccion, correo, cp, id_proveedor)
+        valores=( nombre, paterno, materno, marca, telefono, direccion, correo, cp, id)
         cur.execute(sql,valores)
         conn.commit()
         cur.close()
@@ -390,34 +392,15 @@ def proveedorEliminar(id):
 @app.route("/dashboard_usuarios")
 @login_required
 def dashboardUsuarios():
-    titulo = "Usuarios"
-    search_query = request.args.get('buscar', '', type=str)
-    sql_count = 'SELECT COUNT(*) FROM usuarios WHERE activo=True AND (username ILIKE %s OR tipo_usuario ILIKE %s); '
-    sql_lim = 'SELECT * FROM usuarios  WHERE activo=true AND (username ILIKE %s OR tipo_usuario ILIKE %s) ORDER BY id_usuario DESC LIMIT %s OFFSET %s;'
-    paginado = paginador(sql_count, sql_lim, search_query, 1, 10)
-    print('usuarios')
-    print(paginado[0])
-
-    print('page')
-    print(paginado[1])
-
-    print('pp')
-    print(paginado[2])
-
-    print('total')
-    print(paginado[3])
-
-    print('total p')
-    print(paginado[4])
-    return render_template('dashboardUsuarios.html', titulo=titulo,
-   
-                            usuarios=paginado[0],
-                            page=paginado[1],
-                            per_page=paginado[2],
-                            total_items=paginado[3],
-                            total_pages=paginado[4],
-                            search_query=search_query)
-
+        titulo = "Usuarios"
+        conn = get_db_connection()
+        cur = conn.cursor()
+        cur.execute('SELECT * FROM usuarios;')
+        usuarios = cur.fetchall()
+        cur.close()
+        conn.close()
+        return render_template('dashboardUsuarios.html', titulo=titulo, usuarios=usuarios)
+    
 @app.route("/usuarios_nuevo")
 @login_required
 def registrarUsuario():
@@ -440,7 +423,7 @@ def usuariosCrear():
         cur = conn.cursor()
         cur.execute('INSERT INTO usuarios (username, password, tipo_usuario, activo)'
                     'VALUES (%s, %s, %s, %s)',
-                    (username, password, tipo_usuario, activo))
+                    (username, password, tipo_usuario, activo, id))
         conn.commit()
         cur.close()
         conn.close()
@@ -458,33 +441,27 @@ def usuariosEditar(id):
     titulo = "Editar Usuario"
     conn = get_db_connection()
     cur = conn.cursor()
-    cur.execute('SELECT * FROM usuarios WHERE id_usuario=%s', (id,))
-    usuario = cur.fetchone()
+    cur.execute('SELECT * FROM usuarios WHERE id_usuario={0}'.format(id))
+    usuario=cur.fetchall()
     conn.commit()
     cur.close()
     conn.close()
-    return render_template('usuariosEditar.html', titulo=titulo, usuario=usuario)
+    return render_template('usuariosEditar.html', titulo=titulo, usuario=usuario[0])
 
 
 @app.route('/dashboard/usuarios/actualizar/<string:id>', methods=['POST'])
 @login_required
 def usuariosActualizar(id):
     if request.method == 'POST':
-        id_usuario=request.form['id_usuario']
-        nombre = request.form['nombre']
-        paterno = request.form['paterno']
-        materno = request.form['materno']
-        direccion = request.form['direccion']
-        telefono = request.form['telefono']
-        correo = request.form['correo']
-        rol = request.form['rol']
+        username = request.form['username']
+        password = request.form['password']
+        tipo_usuario = request.form['tipo_usuario']
+        activo = True
         
-
-
         conn = get_db_connection()
         cur = conn.cursor()
-        sql="UPDATE usuarios SET nombre=%s, ape_pat=%s, ape_mat=%s, direccion=%s, telefono=%s , correo=%s, rol=%s WHERE id_usuario=%s"        
-        valores=( nombre, paterno, materno, direccion, telefono, correo, rol, id_usuario)
+        sql="UPDATE usuarios SET username=%s, password=%s, tipo_usuario=%s WHERE id_usuario=%s"        
+        valores=( username, password, tipo_usuario, activo, id)
         cur.execute(sql,valores)
         conn.commit()
         cur.close()
@@ -764,7 +741,7 @@ def categoriaEliminar(id):
     conn = get_db_connection()
     cur = conn.cursor()
     sql="DELETE FROM categorias WHERE id_categoria={0}".format(id)
-    #sql="UPDATE productos SET activo=%s WHERE id_producto=%s"
+    sql="UPDATE productos SET activo=%s WHERE id_producto=%s"
     valores=(id)
     cur.execute(sql,valores)
     conn.commit()
@@ -774,20 +751,77 @@ def categoriaEliminar(id):
     return redirect(url_for('dashboardCategorias'))
 
 #-----------------------CAJERO---------------------------------------
-@app.route('/cajero/ventas')
-@login_required
-def cajeroVentas():
-    return render_template('cajeroVentas.html')
+
 
 @app.route('/cajero/corte')
 @login_required
 def cajeroCorte():
-    return render_template('cajeroCorte.html')
+        if current_user.tipo == 'cajero':
+
+            return render_template('cajeroCorte.html')
+        else:
+            return redirect(url_for('login'))
+
 
 @app.route('/cajero/gastos')
 @login_required
 def cajeroGastos():
-    return render_template('cajeroGastos.html')
+    if current_user.tipo == 'cajero':
+        return render_template('cajeroGastos.html')
+    else:
+        return redirect(url_for('login'))
+
+@app.route('/cajero/dashboardProductos')
+@login_required
+def cajeroProductos():
+    if current_user.tipo == 'cajero':
+
+        titulo = "Productos"
+        page = request.args.get('page', 1, type=int)
+        per_page = request.args.get('per_page', 2, type=int)
+        search_query = request.args.get('search', '', type=str)
+
+        offset = (page - 1) * per_page
+
+        conn = get_db_connection()
+        cur = conn.cursor(cursor_factory=RealDictCursor)
+
+        # Obtener el número total de productos que coinciden con la búsqueda
+        cur.execute('SELECT COUNT(*) FROM vista_productos WHERE nombre_producto ILIKE %s OR marca ILIKE %s', 
+                    (f'%{search_query}%', f'%{search_query}%'))
+        total_items = cur.fetchone()['count']
+
+        # Obtener los productos con límite, offset y búsqueda
+        cur.execute('SELECT * FROM vista_productos WHERE nombre_producto ILIKE %s OR marca ILIKE %s LIMIT %s OFFSET %s',
+                    (f'%{search_query}%', f'%{search_query}%', per_page, offset))
+        productos = cur.fetchall()
+
+        cur.close()
+        conn.close()
+
+        total_pages = (total_items + per_page - 1) // per_page
+
+        return render_template(
+            'cajeroProductos.html',
+            titulo=titulo,
+            productos=productos,
+            page=page,
+            per_page=per_page,
+            total_items=total_items,
+            total_pages=total_pages,
+            search_query=search_query
+        )
+    
+    else:
+        return redirect(url_for('login'))
+#------------------------------VENTAS-------------------------------------------------
+@app.route('/cajero/ventas')
+@login_required
+def cajeroVentas():
+        if current_user.tipo == 'cajero':
+         return render_template('cajeroVentas.html')
+        else:
+            return redirect(url_for('login'))
 
 #---------------LOGIN--------------------
 @app.route('/login')
@@ -810,7 +844,7 @@ def loguear():
                 flash("Nombre de usuario y/o contraseña incorrecta.")
                 return redirect(url_for('login'))
         else:
-            flash("Nombre de usuario y/o conttraseña incorrecta.")
+            flash("Nombre de usuario y/o contraseña incorrecta.")
             return redirect(url_for('login'))
     
 @app.route('/logout')

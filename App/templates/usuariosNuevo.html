@@ -35,13 +35,13 @@
             <select class="form-select" aria-label="Default select example" name="tipo">
               <option selected
               {% if usuario is defined and usuario.activo == true %}
-                  value="true">Activo
+                  value="true">Administrador
                 {% else %}
-                value="false">Baja
+                  value="false">Cajero
                 {% endif %}
               </option>
-              <option value="True">Activo</option>
-              <option value="False">Baja</option>
+              <option value="True">Administrador</option>
+              <option value="False">Cajero</option>
             </select>
             
             <center>

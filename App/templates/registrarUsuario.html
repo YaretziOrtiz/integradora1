@@ -15,7 +15,6 @@
             <select id="product-menu">
                 <option value="usuario">Usuario</option>
             </select>
-            <button>Reportes</button>
         </nav>
         <div class="user-info">
             <span id="user-dropdown" class="dropdown">Admin@Uri</span>
@@ -39,15 +38,14 @@
             <select class="form-select" aria-label="Default select example" name="tipo">
               <option selected
               {% if usuario is defined and usuario.activo == true %}
-                  value="true">Activo
+                  value="true">Administrador
                 {% else %}
-                value="false">Baja
+                  value="false">Cajero
                 {% endif %}
               </option>
-              <option value="True">Activo</option>
-              <option value="False">Baja</option>
+              <option value="True">Administrador</option>
+              <option value="False">Cajero</option>
             </select>
-            
             <center>
                 <button id="add-product" type="submit">Guardar</button>
                 <a class="btn btn-outline-danger d-inline-flex align-items-center" id="add-other" href="{{url_for('dashboardUsuarios')}}">

@@ -21,7 +21,6 @@
                     <form action="{{ url_for('dashboardUsuarios') }}" method="get" style="display: inline;">
                         <button type="submit" class="btn btn-primary">Usuarios</button>
                     </form>
-                        <button>Reportes</button>
             </nav>
             <div class="user-info">
                 <span id="user-dropdown" class="dropdown">Admin@Uri</span>
@@ -59,7 +58,7 @@
         <button class="btn btn-outline-success" type="submit"><i class="fas fa-search"></i> </button>
       </form>
         <tr>
-            <th class="text-center">Ver <br></th>
+            <th class="text-center">Editar <br></th>
             <th>Nombre</th>
             <th>Apellido paterno</th>
             <th>Apellido materno </th>
@@ -67,13 +66,14 @@
             <th>Telefono</th>
             <th>Dirección</th>
             <th>Correo electronico</th>
+            <th>Codigo Postal</th>
             <!--<th>Codigo Postal</th>-->
             <th class="text-center">Eliminar</th>
         </tr>
         {% if proveedores %}
         {% for proveedor in proveedores %}
             <tr>
-                <td class="text-center"><a class="btn btn-sm btn-primary" href="{{ url_for('proveedoresDetalles', id=proveedor.id_proveedor) }}"><i class="fas fa-eye"></i></a></td>
+                <td class="text-center"><a class="btn btn-sm btn-primary" href="{{ url_for('proveedoresEditar', id=proveedor.id_proveedor) }}"><i class="fas fa-eye"></i></a></td>
                 <td>{{ proveedor.nombre }} 
                 </td>
                 <td>{{ proveedor.ape_pat }} 
@@ -83,6 +83,8 @@
                 <td> {{ proveedor.marca }}
                 </td>
                 <td> {{ proveedor.telefono }}
+                </td>
+                <td> {{ proveedor.direccion }}
                 </td>
                 <td> {{ proveedor.correo }}
                 </td>
