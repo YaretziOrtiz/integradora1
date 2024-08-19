@@ -29,12 +29,12 @@
         <h1>Agregar un Nuevo Usario</h1>
         <div class="form-container">
             <label for="nombre">Nombre de usuario</label>
-            <input type="text" id="username" placeholder="Nombre">
+            <input type="text" id="username" name="username" placeholder="username">            
             
-            <label for="contrasenia"> Contraseña</label>
-            <input type="password" id="password" placeholder="Contraseña">
+            <label for="contrasenia">Contraseña</label>
+            <input type="password" id="password" name="password" placeholder="Contraseña">
 
-            <label for="tipo">Estado</label>
+            <label for="tipo">Tipo de Usuario</label>
             <select class="form-select" aria-label="Default select example" name="tipo">
               <option selected
               {% if usuario is defined and usuario.activo == true %}

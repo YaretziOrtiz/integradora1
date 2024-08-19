@@ -1,0 +1,41 @@
+{% extends './layoutCajero.html' %}
+{% block title %} {{titulo}} {% endblock %}
+{% block body %}
+<header>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/stylesForm.css') }}">
+    <div class="logo">ROLKAR</div>
+        <nav class="nav-bar">
+<form id="ventaForm" onsubmit="registrarVenta(event)">
+    <div>
+        <label for="fk_producto">Producto:</label>
+        <input type="text" id="fk_producto" name="fk_producto">
+    </div>
+    <div>
+        <label for="cantidad_vendida">Cantidad Vendida:</label>
+        <input type="number" id="cantidad_vendida" name="cantidad_vendida">
+    </div>
+    <div>
+        <label for="total_venta">Total Venta:</label>
+        <input type="text" id="total_venta" name="total_venta" readonly>
+    </div>
+    <div>
+        <label for="fk_cliente">Cliente:</label>
+        <input type="text" id="fk_cliente" name="fk_cliente">
+    </div>
+    <div>
+        <label for="fk_usuario">Usuario:</label>
+        <input type="text" id="fk_usuario" name="fk_usuario">
+    </div>
+    <div>
+        <button type="button" onclick="calcularTotal()">Calcular Total</button>
+        <button type="submit">Registrar Venta</button>
+    </div>
+    <br>
+    <div class="col text-end">
+        <a href="{{ url_for('dashboardProductos') }}" class="btn btn-primary">
+            <i class="fas fa-plus-circle"></i> Atrás
+        </a>
+    </div> 
+</form>
+    <script src="scripts.js"></script>
+{% endblock %}

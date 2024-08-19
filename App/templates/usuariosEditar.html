@@ -1,7 +1,7 @@
 {% extends './layout_cyk.html' %}
 {% block title %} {{titulo}} {% endblock %}
 {% block body %}
-<form method="post" action="{{ url_for('usuariosActualizar', id=usuario[0]) }}" enctype="multipart/form-data">
+<form method="post" action="{{ url_for('usuariosActualizar', id=usuario_id) }}" enctype="multipart/form-data">
     <input type="hidden" name="csrf_token" value="{{csrf_token()}}">
     <header>
         <div class="logo">ROLKAR</div>
@@ -27,19 +27,18 @@
         <div class="form-container">
             
             <label for="nombre">Nombre de usuario</label>
-            <input type="text" id="username" placeholder="username" value="{{ usuario[1] }}">
+            <input type="text" id="username" name="username" placeholder="username" value="{{ usuario[1] }}">            
             
-            <label for="contrasenia"> Contraseña</label>
-            <input type="password" id="password" placeholder="Contraseña" value="{{ usuario[2] }}">>
+            <label for="contrasenia">Contraseña</label>
+            <input type="password" id="password" name="password" placeholder="Contraseña" value="{{ usuario[2] }}">
 
-
-            <label for="tipo">Estado</label>
-            <select class="form-select" aria-label="Default select example" name="tipo" value="{{ usuario[3] }}"></select>>
+            <label for="tipo">Tipo de Usuario</label>
+            <select class="form-select" aria-label="Default select example" name="tipo">
               <option selected
               {% if usuario is defined and usuario.activo == true %}
                   value="true">Administrador
                 {% else %}
-                value="false">Cajero
+                  value="false">Cajero
                 {% endif %}
               </option>
               <option value="True">Administrador</option>

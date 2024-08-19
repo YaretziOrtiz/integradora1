@@ -1,4 +1,4 @@
-from flask import Flask, render_template, url_for, redirect, request, flash
+from flask import Flask, render_template, url_for, redirect, request, flash, jsonify
 import os
 import uuid 
 import psycopg2
@@ -21,7 +21,7 @@ csrf= CSRFProtect()
 def get_db_connection():
     try:
         conn = psycopg2.connect(host='localhost',
-                                dbname='nutrimentosRolkar',
+                                dbname='nutrimentos',
                                 user=os.environ['DB_USERNAME'],
                                 password=os.environ['DB_PASSWORD'])                   
         return conn
@@ -225,12 +225,9 @@ def productosActualizar(id):
 @app.route('/dashboard/productos/eliminar/<string:id>')
 @login_required
 def productoEliminar(id):
-    #activo = False
-    #editado = datetime.now()
     conn = get_db_connection()
     cur = conn.cursor()
     sql="DELETE FROM productos WHERE id_producto={0}".format(id)
-    #sql="UPDATE productos SET activo=%s WHERE id_producto=%s"
     valores=(id)
     cur.execute(sql,valores)
     conn.commit()
@@ -374,12 +371,9 @@ def proveedoresDetalles(id):
 @app.route('/dashboard/proveedores/eliminar/<string:id>')
 @login_required
 def proveedorEliminar(id):
-    #activo = False
-    #editado = datetime.now()
     conn = get_db_connection()
     cur = conn.cursor()
     sql="DELETE FROM proveedor WHERE id_proveedor={0}".format(id)
-    #sql="UPDATE productos SET activo=%s WHERE id_producto=%s"
     valores=(id)
     cur.execute(sql,valores)
     conn.commit()
@@ -637,7 +631,6 @@ def clienteEliminar(id):
     return redirect(url_for('dashboardClientes'))
 
 #-----------------Categoria--------------------------
-
 @app.route("/dashboard_categorias")
 @login_required
 def dashboardCategorias():
@@ -786,12 +779,10 @@ def cajeroProductos():
         conn = get_db_connection()
         cur = conn.cursor(cursor_factory=RealDictCursor)
 
-        # Obtener el número total de productos que coinciden con la búsqueda
         cur.execute('SELECT COUNT(*) FROM vista_productos WHERE nombre_producto ILIKE %s OR marca ILIKE %s', 
                     (f'%{search_query}%', f'%{search_query}%'))
         total_items = cur.fetchone()['count']
 
-        # Obtener los productos con límite, offset y búsqueda
         cur.execute('SELECT * FROM vista_productos WHERE nombre_producto ILIKE %s OR marca ILIKE %s LIMIT %s OFFSET %s',
                     (f'%{search_query}%', f'%{search_query}%', per_page, offset))
         productos = cur.fetchall()
@@ -815,13 +806,12 @@ def cajeroProductos():
     else:
         return redirect(url_for('login'))
 #------------------------------VENTAS-------------------------------------------------
-@app.route('/cajero/ventas')
-@login_required
-def cajeroVentas():
-        if current_user.tipo == 'cajero':
-         return render_template('cajeroVentas.html')
-        else:
-            return redirect(url_for('login'))
+#@app.route('/cajero/ventas')
+#def cajeroVentas():
+  #      if current_user.tipo == 'cajero':
+   #      return render_template('cajeroVentas.html')
+    #    else:
+     #       return redirect(url_for('login'))
 
 #---------------LOGIN--------------------
 @app.route('/login')
@@ -846,6 +836,55 @@ def loguear():
         else:
             flash("Nombre de usuario y/o contraseña incorrecta.")
             return redirect(url_for('login'))
+
+
+#---------------trigger----------
+@app.route('/registrar_venta', methods=['GET'])
+def mostrarFormularioVenta():
+    return render_template('registrarVenta.html')
+
+@app.route('/api/ventas', methods=['POST'])
+def registrarVenta():
+    print("Método HTTP recibido:", request.method)  # Línea de depuración
+    
+    if request.is_json:
+        data = request.get_json()
+    else:
+        return jsonify({"success": False, "message": "Content-Type debe ser application/json"}), 415
+
+    fk_producto = data['fk_producto']
+    fk_cliente = data['fk_cliente']
+    fk_usuario = data['fk_usuario']
+    cantidad_vendida = data['cantidad_vendida']
+
+    conn = get_db_connection()
+    cur = conn.cursor()
+
+    try:
+        # Insertar la venta en la tabla ventas
+        cur.execute('INSERT INTO ventas (fk_producto, fk_cliente, fk_usuario, cantidad_vendida) '
+                    'VALUES (%s, %s, %s, %s) RETURNING id_venta;', 
+                    (fk_producto, fk_cliente, fk_usuario, cantidad_vendida))
+        
+        # Obtener el id de la venta registrada
+        id_venta = cur.fetchone()[0]
+
+        # Llamar a la función disminuir_cantidad_producto() en PostgreSQL
+        cur.callproc('disminuir_cantidad_producto', [fk_producto, fk_cliente, fk_usuario, cantidad_vendida])
+
+        conn.commit()
+
+        return jsonify({"success": True, "message": "Venta registrada con éxito", "id_venta": id_venta})
+
+    except Exception as e:
+        conn.rollback()
+        return jsonify({"success": False, "message": str(e)}), 500
+
+    finally:
+        cur.close()
+        conn.close()
+
+#--------------------------------
     
 @app.route('/logout')
 @login_required
